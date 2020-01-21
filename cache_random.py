@@ -1,6 +1,6 @@
 import random
-# import plt_graph as cg
 import c_Status
+
 #region 초기선언
 ################################# 초기 선언
 class Cpu:
@@ -24,7 +24,7 @@ class Cpu:
         self.ac = self.r1 + self.r2
 
 
-drive_size = 5000
+drive_size = 10
 ram_size = 500
 L1_size = 5
 L2_size = 20
@@ -34,23 +34,25 @@ L3_size = 50
 drive = list(range(1, drive_size + 1)) #  1 ~ 5000
 # print(len(drive))
 
+
+########### None으로 정의된 변수들은 init_var에서 제대로 정의해준다 (작업 반복할때 초기화용)
+
 ##### 램
-ram = [None] * ram_size
-# print(len(ram))
+ram = None
 
 ##### 캐시
-L1 = [None] * L1_size
-L2 = [None] * L2_size
-L3 = [None] * L3_size
+L1 = None
+L2 = None
+L3 = None
 
 ##### CPU 클래스 선언
-cpu = Cpu()
+cpu = None
 
 ##### Status 클래스 선언
-stat = c_Status.Status()
-##### 딕셔너리
-storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: L2, 4: L3, 5: ram, 6: drive} #### 저장찾치
-time_dict = {2: 0.1, 3: 0.2, 4: 0.3, 5: 1.3, 6: 4.3} #### access time
+stat = None
+
+##### 저장장치 딕셔너리
+storage_structure = None
 
 #################################
 #endregion
@@ -100,7 +102,35 @@ def print_status():
     print("L3:", L3)
     print()
 
-def cycle(loop_size=1000):
+def init_var(is_allcache):
+    global ram, L1, L2, L3, cpu, stat, storage_structure
+
+    ##### 램
+    ram = [None] * ram_size
+    # print(len(ram))
+
+    ##### 캐시
+    L1 = [None] * L1_size
+    L2 = [None] * L2_size
+    L3 = [None] * L3_size
+
+    ##### CPU 클래스 선언
+    cpu = Cpu()
+
+    ##### Status 클래스 선언
+    stat = c_Status.Status(is_allcache)
+
+    if is_allcache:
+        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: L2, 4: L3, 5: ram, 6: drive} #### 저장찾치
+    else:
+        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: ram, 4: drive} #### 저장찾치
+
+
+
+
+def cycle(loop_size=1000, is_allcache=True):
+    init_var(is_allcache)
+    
     for i in range(loop_size):
         #### 찾을 데이터 랜덤
 
@@ -112,15 +142,20 @@ def cycle(loop_size=1000):
 
         cpu.process()
 
-        print_status()
-
+        # print_status()
     stat.end(loop_size)
 
-    print("연산 수행 횟수:", loop_size)
-    print("hit rate:", stat.hit_rate)
-    print("평균 접근 시간:", stat.average_time)
-    print("hit count:", stat.hit_cnt)
+    # print("Random")
+    # print("연산 수행 횟수:", loop_size)
+    # print("hit rate:", stat.hit_rate)
+    # print("평균 접근 시간:", stat.average_time)
+    # print("hit count:", stat.hit_cnt)
+
+
+    return stat
 
     
+
+
 if __name__ == "__main__":
-    cycle(10000)
+    cycle(10000)        

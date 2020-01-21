@@ -1,10 +1,31 @@
 import random
 import queue
-import CPU_c
-import plt_graph as cg
+import c_Status
 
 #region 초기선언
 ################################# 초기 선언
+
+class Cpu:
+    
+    def __init__(self):
+        self.ac = 0
+        self.r1 = 0
+        self.r2 = 0
+
+        self.mar1 = 0
+        self.mar2 = 0
+
+    def process(self):
+        self.r1 = load_data(self.mar1)
+        self.r2 = load_data(self.mar2)
+
+        self.cpu_add()
+
+
+    def cpu_add(self):
+        self.ac = self.r1 + self.r2
+
+
 drive_size = 5000
 ram_size = 500
 L1_size = 5
@@ -15,28 +36,31 @@ L3_size = 50
 drive = list(range(1, drive_size + 1)) #  1 ~ 5000
 # print(len(drive))
 
+########### None으로 정의된 변수들은 init_var에서 제대로 정의해준다 (작업 반복할때 초기화용)
+
 ##### 램
-ram = queue.Queue(ram_size)
+ram = None
 
 ##### 캐시
-L1 = queue.Queue(L1_size)
-L2 = queue.Queue(L2_size)
-L3 = queue.Queue(L3_size)
+L1 = None
+L2 = None
+L3 = None
 
 ##### CPU 클래스 선언
-cpu = CPU_c.CPU()
+cpu = None
+
+##### Status 클래스 선언
+stat = None
 
 ##### 저장장치 딕셔너리
-storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: L2, 4: L3, 5: ram, 6: drive}
-time_dict = {2: 0.1, 3: 0.2, 4: 0.3, 5: 1.3, 6: 4.3} #### access time
-
+storage_structure = None
 
 #################################
 #endregion
 
 
 #### 재귀로 데이터 찾고 저장하기
-def find_data(tar_data, storage_key=2):
+def load_data(address, storage_key=2):
     storage = storage_structure[storage_key] ####딕셔너리에서 현재 참고해야할 저장장치 변수를 storage에 담는다 (파이썬은 주소 개념이라 자동으로 바뀜)
 
     try: #### 저장장치 종류가 queue이면
@@ -44,13 +68,13 @@ def find_data(tar_data, storage_key=2):
     except: #### 저장장치가 queue가 아니면, 즉 하드디스크이면
         list_storage = storage
 
-    if tar_data in list_storage: #### 찾고싶은 데이터가 저장공간에 있으면
-        index = list_storage.index(tar_data) 
+    if address in list_storage: #### 찾고싶은 데이터가 저장공간에 있으면
+        index = list_storage.index(address) 
         data = list_storage[index]
-        location = storage_key
+        stat.set_location(storage_key)
 
     else: #### 없으면 다음 저장장치로 재귀
-        data, location = find_data(tar_data, storage_key + 1)
+        data = load_data(address, storage_key + 1)        
 
         if not storage.full(): #### 저장공간에 빈 공간이 없으면 랜덤으로 채움
             storage.put_nowait(data)
@@ -58,86 +82,70 @@ def find_data(tar_data, storage_key=2):
             storage.get_nowait()
             storage.put_nowait(data)
 
-            
 
+    return data
 
-    return data, location
+def print_status():
+    print("접근 시간:", stat.access_time[-2], stat.access_time[-1])
+    print("검색 대상 데이터: %d, %d" % (cpu.mar1, cpu.mar2))
+    print("r1:", cpu.r1, "r2:", cpu.r2, "result:", cpu.ac, "answer:", cpu.mar1 + cpu.mar2)
 
-#### 매번의 실행결과 
-def print_status(location1, location2, tar_data1, tar_data2):
-    print("접근 시간:", time_dict[location1], time_dict[location2])
-    print("검색 대상 데이터: %d, %d" % (tar_data1, tar_data2))
-    print("r1:", cpu.r1, "r2:", cpu.r2, "result:", cpu.alu, "answer:", tar_data1+tar_data2)
-
-    print("L1:", L1)
-    print("L2:", L2)
-    print("L3:", L3)
+    print("L1:", L1.queue)
+    print("L2:", L2.queue)
+    print("L3:", L3.queue)
     print()
-    
+
+def init_var(is_allcache):
+    global ram, L1, L2, L3, cpu, stat, storage_structure
+
+    ##### 램
+    ram = queue.Queue(ram_size)
+
+    ##### 캐시
+    L1 = queue.Queue(L1_size)
+    L2 = queue.Queue(L2_size)
+    L3 = queue.Queue(L3_size)
+
+    ##### CPU 클래스 선언
+    cpu = Cpu()
+
+    ##### Status 클래스 선언
+    stat = c_Status.Status(is_allcache)
+    if is_allcache:
+        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: L2, 4: L3, 5: ram, 6: drive} #### 저장찾치
+    else:
+        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: ram, 4: drive} #### 저장찾치
 
 
-def get_data(tar_data):
-    is_hit = False
-    #### 찾은 데이터와 어디서 찾았는지(정수형) 으로 받아온다
-    data2reg, location = find_data(tar_data)
 
-    #### HIT COUNT
-    if location in [2,3,4]:
-        is_hit = True
-
-    
-    return data2reg, is_hit, location
-
-#endregion
-
-
-####### 그래프 그리기
-def plt_group(status_list, loop_size):
-    cg.plt_accesstime(status_list, loop_size)
-    cg.plt_hitcnt(status_list, loop_size)
-
-
-def cycle(loop_size=1000):
-    #### 결과 출력용 변수
-    hit_cnt = 0
-    time_sum = 0.0
-
-    ####그래프용
-    status_list = [] #### [[히트여부, 접근시간]]
-
+def cycle(loop_size=1000, is_allcache=True):
+    init_var(is_allcache)
     for i in range(loop_size):
         #### 찾을 데이터 랜덤
-        tar_data1 = random.randint(1, drive_size)
-        cpu.r1, is_hit1, location1 =  get_data(tar_data1) # status 안에는 is_hit 여부와, access_time이 들어있다
-        hit_cnt += is_hit1
 
-        status_list.append([hit_cnt, location1])
+        address1 = random.randint(1, drive_size)
+        cpu.mar1 = address1
 
-        #### 찾을 데이터 랜덤
-        tar_data2 = random.randint(1, drive_size)
-        cpu.r2, is_hit2, location2 = get_data(tar_data2)
-        hit_cnt += is_hit2
-
-        status_list.append([hit_cnt, location2])
-
+        address2 = random.randint(1, drive_size)
+        cpu.mar2 = address2
 
         cpu.process()
 
-        # print_status(location1, location2, tar_data1, tar_data2)
+        # print_status()
 
-    plt_group(status_list, loop_size)
+    stat.end(loop_size)
 
-    time_list = [i[1] for i in status_list]
-    for i in range(len(time_list)): #### 평균을 계산하기 위한 계산
-        time_sum += time_dict[time_list[i]]
+    # print("FIFO")
+    # print("연산 수행 횟수:", loop_size)
+    # print("hit rate:", stat.hit_rate)
+    # print("평균 접근 시간:", stat.average_time)
+    # print("hit count:", stat.hit_cnt)
 
-    average_time = time_sum / (loop_size * 2)
 
-    print("연산 수행 횟수:", loop_size)
-    print("hit rate:", hit_cnt / (loop_size * 2))
-    print("평균 접근 시간:", average_time)
-    print("hit count:", hit_cnt)
+    return stat
 
     
+
+
 if __name__ == "__main__":
-    cycle(10000)
+    cycle(10000, False)        
