@@ -1,8 +1,8 @@
-time_dict = {2: 0.1, 3: 0.2, 4: 0.3, 5: 1.3, 6: 4.3} #### access time
+
 
 class Status:
 
-    def __init__(self):
+    def __init__(self, is_allcache):
         
         self.is_hit = []
         self.hit_cnt = 0
@@ -13,11 +13,19 @@ class Status:
         
         self.access_time = []
         self.average_time = 0.0
-    
+
+        if is_allcache:
+            self.time_dict = {2: 0.3, 3: 0.3, 4: 0.3, 5: 1.3, 6: 4.3} #### access time
+            self.cache_index = [2, 3, 4]
+
+        else:
+            self.time_dict = {2: 0.3, 3: 1.3, 4: 4.3} #### access time
+            self.cache_index = [2]
+                        
     
     def set_location(self, storage_key):
-        self.is_hit.append(storage_key in [2,3,4])
-        self.access_time.append(time_dict[storage_key])
+        self.is_hit.append(storage_key in self.cache_index)
+        self.access_time.append(self.time_dict[storage_key])
         # if self.data_location1 is None:
         #     self.data_location1 = storage_key
 
