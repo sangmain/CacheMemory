@@ -2,6 +2,7 @@ import random
 import queue
 import c_Status
 
+
 #region 초기선언
 ################################# 초기 선언
 
@@ -117,12 +118,13 @@ def init_var(is_allcache):
         storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: ram, 4: drive} #### 저장찾치
 
 
+def cycle(loop_size, seed, is_allcache=True):
+    init_var(is_allcache) #### 변수 정의
+    random.seed(seed)
 
-def cycle(loop_size=1000, is_allcache=True):
-    init_var(is_allcache)
     for i in range(loop_size):
-        #### 찾을 데이터 랜덤
 
+        #### 찾을 데이터 랜덤
         address1 = random.randint(1, drive_size)
         cpu.mar1 = address1
 
@@ -148,4 +150,4 @@ def cycle(loop_size=1000, is_allcache=True):
 
 
 if __name__ == "__main__":
-    cycle(10000, False)        
+    cycle(10000, 103001, False)        

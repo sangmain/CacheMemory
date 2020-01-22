@@ -2,7 +2,7 @@
 
 class Status:
 
-    def __init__(self, is_allcache):
+    def __init__(self, is_allcache=True):
         
         self.is_hit = []
         self.hit_cnt = 0

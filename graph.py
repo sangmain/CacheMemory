@@ -62,8 +62,7 @@ with open('random_is_hit.txt', 'rb') as f:
 
 
 def plt_accesstime(status_list, loop_size):
-    time_sum = 0.0
-    time_list = [i[1] for i in status_list]
+
     
     # for i in range(len(time_list)): #### 평균을 계산하기 위한 계산
     #     time_sum += time_dict[time_list[i]]

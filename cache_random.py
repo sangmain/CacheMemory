@@ -24,7 +24,7 @@ class Cpu:
         self.ac = self.r1 + self.r2
 
 
-drive_size = 10
+drive_size = 5000
 ram_size = 500
 L1_size = 5
 L2_size = 20
@@ -128,12 +128,13 @@ def init_var(is_allcache):
 
 
 
-def cycle(loop_size=1000, is_allcache=True):
-    init_var(is_allcache)
-    
-    for i in range(loop_size):
-        #### 찾을 데이터 랜덤
+def cycle(loop_size, seed, is_allcache=True):
+    init_var(is_allcache) #### 변수 정의
+    random.seed(seed)
 
+    for i in range(loop_size):
+
+        #### 찾을 데이터 랜덤
         address1 = random.randint(1, drive_size)
         cpu.mar1 = address1
 
@@ -158,4 +159,4 @@ def cycle(loop_size=1000, is_allcache=True):
 
 
 if __name__ == "__main__":
-    cycle(10000)        
+    cycle(10000, 1, True)        
