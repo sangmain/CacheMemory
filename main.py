@@ -1,5 +1,6 @@
 import cache_random
 import cache_fifo
+import cache_lru
 import c_Status
 
 import pickle
@@ -10,7 +11,7 @@ loop_size = 10
 
 cycle_dict = {0:1000, 1:3000, 2:5000, 3:8000, 4:10000}
 
-replace_alg = {0: cache_random, 1:cache_fifo}
+replace_alg = {0: cache_random, 1:cache_fifo, 2:cache_lru}
 def process(alg_index, cycle_cnt, is_allcache):
     stat = c_Status.Status()
     hit_rates = []
@@ -45,10 +46,15 @@ for i in range(5):
     print("\nRandom L1 ONLY")
     process(0, cycle_dict[i], False)
 
-    print("\nFIFO ALL CACHE")
-    process(1, cycle_dict[i], True)
-    print("\nFIFO L1 ONLY")
-    process(1,cycle_dict[i], False)
+    # print("\nFIFO ALL CACHE")
+    # process(1, cycle_dict[i], True)
+    # print("\nFIFO L1 ONLY")
+    # process(1,cycle_dict[i], False)
+
+    print("\nLRU ALL CACHE")
+    process(2, cycle_dict[i], True)
+    print("\nLRU L1 ONLY")
+    process(2,cycle_dict[i], False)
   
     print("\n")
 

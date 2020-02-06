@@ -19,22 +19,7 @@ class Cpu:
 
     def process(self):
         self.r1 = load_data(self.mar1)
-        print(L1.cache)
-        print(L1.recent_log)
-        print(L2.cache)
-        print(L2.recent_log)
-        print(L3.cache)
-        print(L3.recent_log)
-
-        print()
         self.r2 = load_data(self.mar2)
-        print(L1.cache)
-        print(L1.recent_log)
-        print(L2.cache)
-        print(L2.recent_log)
-        print(L3.cache)
-        print(L3.recent_log)
-        print()
 
         self.cpu_add()
 
@@ -42,13 +27,13 @@ class Cpu:
     def cpu_add(self):
         self.ac = self.r1 + self.r2
 
-class Cache:
-    def __init__(self, size, replace_type=0):
+class Memory:
+    def __init__(self, size=1, replace_type=0):
         #### replace_type는 0: Random, 1: FIFO, 2: LRU 
         if replace_type == 1: ## FIFO 일시
-            self.cache = queue.Queue(size)
+            self.data = queue.Queue(size)
         else:
-            self.cache = [None] * size
+            self.data = [None] * size
             self.recent_log = []
 
 
@@ -59,7 +44,8 @@ L2_size = 20
 L3_size = 50
 
 ##### 하드 디스크
-drive = list(range(1, drive_size + 1)) #  1 ~ 5000
+drive = Memory()
+drive.data =  list(range(1, drive_size + 1)) #  1 ~ 5000
 # print(len(drive))
 
 
@@ -94,36 +80,51 @@ def get_emptyindex(storage):
 
 #### 재귀로 데이터 찾고 저장하기
 def load_data(address, storage_key=2):
-    storage = storage_structure[storage_key] ####딕셔너리에서 현재 참고해야할 저장장치 변수를 storage에 담는다 (파이썬은 주소 개념이라 자동으로 바뀜)
-    if storage_key in [2, 3, 4]:
-        storage = storage.cache
+    storage = storage_structure[storage_key].data ####딕셔너리에서 현재 참고해야할 저장장치 변수를 storage에 담는다 (파이썬은 주소 개념이라 자동으로 바뀜)
+    recent_log = storage_structure[storage_key].recent_log
+    
     if address in storage: #### 찾고싶은 데이터가 저장공간에 있으면
         index = storage.index(address) 
         data = storage[index]
         stat.set_location(storage_key)
+
+        
+
+        for i in range(storage_key, len(storage_structure)-1, 1):
+            recent_log = storage_structure[i].recent_log
+            recent_log[index] = 0
+            try:
+                recent_log[index] = 0
+            except:
+                recent_log.append(0)
+
+            recent_log = [x + 1 for x in recent_log]
+            storage_structure[i].recent_log = recent_log
+
+
+        
     else: #### 없으면 다음 저장장치로 재귀
         data = load_data(address, storage_key + 1) #재귀 후 발견된 데이터 반환
         indices = get_emptyindex(storage)
 
-        if len(indices) == 0: #### 저장공간에 빈 공간이 없으면 랜덤으로 채움
+        if len(indices) == 0: #### 저장공간에 빈 공간이 없으면 LRU로 채움
             recent_log = storage_structure[storage_key].recent_log
             lfu_index = recent_log.index(max(recent_log))
             storage[lfu_index] = data
             recent_log[lfu_index] = 0
-            recent_log = [x + 1 for x in recent_log]
-
-            storage_structure[storage_key].recent_log = recent_log
 
         else:
             storage[indices[0]] = data
 
-            if storage_key in [2, 3, 4]:
-                recent_log = storage_structure[storage_key].recent_log
-                recent_log.append(0)
-                recent_log = [x + 1 for x in recent_log]
-                storage_structure[storage_key].recent_log = recent_log
+            recent_log = storage_structure[storage_key].recent_log
+            recent_log.append(0)
+
+        recent_log = [x + 1 for x in recent_log]
+        storage_structure[storage_key].recent_log = recent_log
 
 
+
+   
         
     return data
     
@@ -140,22 +141,22 @@ def print_status():
     print("검색 대상 데이터: %d, %d" % (cpu.mar1, cpu.mar2))
     print("r1:", cpu.r1, "r2:", cpu.r2, "result:", cpu.ac, "answer:", cpu.mar1 + cpu.mar2)
 
-    print("L1:", L1.cache)
-    print("L2:", L2.cache)
-    print("L3:", L3.cache)
+    print("L1:", L1.data)
+    print("L2:", L2.data)
+    print("L3:", L3.data)
     print()
 
 def init_var(is_allcache):
     global ram, L1, L2, L3, cpu, stat, storage_structure
 
     ##### 램
-    ram = [None] * ram_size
+    ram = Memory(ram_size, replace_type)
     # print(len(ram))
 
     ##### 캐시
-    L1 = Cache(L1_size, replace_type)
-    L2 = Cache(L2_size, replace_type)
-    L3 = Cache(L3_size, replace_type)
+    L1 = Memory(L1_size, replace_type)
+    L2 = Memory(L2_size, replace_type)
+    L3 = Memory(L3_size, replace_type)
 
     ##### CPU 클래스 선언
     cpu = Cpu()
@@ -175,47 +176,23 @@ def cycle(loop_size, seed, is_allcache=True):
     init_var(is_allcache) #### 변수 정의
     random.seed(seed)
 
-    for i in range(1):
+    for i in range(loop_size):
 
         #### 찾을 데이터 랜덤
-        # address1 = random.randint(1, drive_size)
-        address1 = 1
+        address1 = random.randint(1, drive_size)
         cpu.mar1 = address1
 
-        address2 = 2
-        # address2 = random.randint(1, drive_size)
+        address2 = random.randint(1, drive_size)
         cpu.mar2 = address2
 
         cpu.process()
 
-        address1 = 3
-        cpu.mar1 = address1
-
-        address2 = 4
-        cpu.mar2 = address2
-
-        cpu.process()
-
-        address1 = 5
-        cpu.mar1 = address1
-
-        address2 = 1
-        cpu.mar2 = address2
-
-        cpu.process()
-
-        address1 = 6
-        cpu.mar1 = address1
-
-        address2 = 7
-        cpu.mar2 = address2
-
-        cpu.process()
+       
 
         # print_status()
     stat.end(loop_size)
 
-    # print("Random")
+    # print("LRU")
     # print("연산 수행 횟수:", loop_size)
     # print("hit rate:", stat.hit_rate)
     # print("평균 접근 시간:", stat.average_time)
