@@ -41,15 +41,16 @@ print(seeds)
 
 for i in range(5):
     print(cycle_dict[i])    
-    print("\nRandom ALL CACHE")
-    process(0, cycle_dict[i], True)
-    print("\nRandom L1 ONLY")
-    process(0, cycle_dict[i], False)
 
-    # print("\nFIFO ALL CACHE")
-    # process(1, cycle_dict[i], True)
-    # print("\nFIFO L1 ONLY")
-    # process(1,cycle_dict[i], False)
+    # print("\nRandom ALL CACHE")
+    # process(0, cycle_dict[i], True)
+    # print("\nRandom L1 ONLY")
+    # process(0, cycle_dict[i], False)
+
+    print("\nFIFO ALL CACHE")
+    process(1, cycle_dict[i], True)
+    print("\nFIFO L1 ONLY")
+    process(1,cycle_dict[i], False)
 
     print("\nLRU ALL CACHE")
     process(2, cycle_dict[i], True)

@@ -27,6 +27,7 @@ class Cpu:
     def cpu_add(self):
         self.ac = self.r1 + self.r2
 
+##### Cache, RAM, DISK 모두 이 클래스로 인해 선언된다
 class Memory:
     def __init__(self, size=1, replace_type=0):
         #### replace_type는 0: Random, 1: FIFO, 2: LRU 
@@ -87,14 +88,12 @@ def load_data(address, storage_key=2):
         index = storage.index(address) 
         data = storage[index]
         stat.set_location(storage_key)
-
         
 
         for i in range(storage_key, len(storage_structure)-1, 1):
             recent_log = storage_structure[i].recent_log
-            recent_log[index] = 0
             try:
-                recent_log[index] = 0
+                recent_log[storage_structure[i].data.index(data)] = 0
             except:
                 recent_log.append(0)
 
@@ -131,29 +130,33 @@ def load_data(address, storage_key=2):
 #endregion
 
 
-# ####### 그래프 그리기
-# def plt_group(status_list, loop_size):
-#     cg.plt_accesstime(status_list, loop_size)
-#     cg.plt_hitcnt(status_list, loop_size)
-
 def print_status():
     print("접근 시간:", stat.access_time[-2], stat.access_time[-1])
     print("검색 대상 데이터: %d, %d" % (cpu.mar1, cpu.mar2))
     print("r1:", cpu.r1, "r2:", cpu.r2, "result:", cpu.ac, "answer:", cpu.mar1 + cpu.mar2)
 
     print("L1:", L1.data)
+    print("log:", L1.recent_log)
     print("L2:", L2.data)
+    print("log:", L2.recent_log)
+
     print("L3:", L3.data)
+    print("log:", L3.recent_log)
+
     print()
+
+    if stat.access_time[-2] < 0.3 or stat.access_time[-1] < 0.3:
+        import sys
+        sys.exit()
 
 def init_var(is_allcache):
     global ram, L1, L2, L3, cpu, stat, storage_structure
 
-    ##### 램
+    ##### 램 클래스 선언
     ram = Memory(ram_size, replace_type)
     # print(len(ram))
 
-    ##### 캐시
+    ##### 캐시 클래스 선언
     L1 = Memory(L1_size, replace_type)
     L2 = Memory(L2_size, replace_type)
     L3 = Memory(L3_size, replace_type)
@@ -205,4 +208,4 @@ def cycle(loop_size, seed, is_allcache=True):
 
 
 if __name__ == "__main__":
-    cycle(3, 1, True)        
+    cycle(1000, 1, True)        

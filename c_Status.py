@@ -15,11 +15,11 @@ class Status:
         self.average_time = 0.0
 
         if is_allcache:
-            self.time_dict = {2: 0.3, 3: 0.3, 4: 0.3, 5: 1.3, 6: 4.3} #### access time
+            self.time_dict = {2: 0.1, 3: 0.2, 4: 0.3, 5: 1.3, 6: 4.3} #### access time
             self.cache_index = [2, 3, 4]
 
         else:
-            self.time_dict = {2: 0.3, 3: 1.3, 4: 4.3} #### access time
+            self.time_dict = {2: 0.1, 3: 1.1, 4: 4.1} #### access time
             self.cache_index = [2]
                         
     
