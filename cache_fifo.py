@@ -27,7 +27,7 @@ class Cpu:
         self.ac = self.r1 + self.r2
 
 
-drive_size = 5000
+drive_size = 1000
 ram_size = 500
 L1_size = 5
 L2_size = 20

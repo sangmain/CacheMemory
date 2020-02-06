@@ -32,9 +32,10 @@ def process(alg_index, cycle_cnt, is_allcache):
 
     return 
 
-for i in range(loop_size):
-    seeds.append(random.randint(1, 1000000))
+# for i in range(loop_size):
+#     seeds.append(random.randint(1, 1000000))
 
+seeds = [826045, 26790, 861716, 375620, 275456, 428079, 624224, 734024, 921549, 869493]
 print(seeds)
 
 for i in range(5):
@@ -48,7 +49,7 @@ for i in range(5):
     process(1, cycle_dict[i], True)
     print("\nFIFO L1 ONLY")
     process(1,cycle_dict[i], False)
-
+  
     print("\n")
 
 
