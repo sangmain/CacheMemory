@@ -31,7 +31,7 @@ def process(alg_index, cycle_cnt, is_allcache):
     print("access_time:", sum(stat.access_time) / loop_size)
     print("hit_rate:", sum(hit_rates) / loop_size)
 
-    return 
+    return is_hit
 
 # for i in range(loop_size):
 #     seeds.append(random.randint(1, 1000000))
@@ -39,26 +39,53 @@ def process(alg_index, cycle_cnt, is_allcache):
 seeds = [826045, 26790, 861716, 375620, 275456, 428079, 624224, 734024, 921549, 869493]
 print(seeds)
 
-for i in range(5):
-    print(cycle_dict[i])    
+# for i in range(5):
+#     print(cycle_dict[i])    
 
-    # print("\nRandom ALL CACHE")
-    # process(0, cycle_dict[i], True)
-    # print("\nRandom L1 ONLY")
-    # process(0, cycle_dict[i], False)
+#     # print("\nRandom ALL CACHE")
+#     # process(0, cycle_dict[i], True)
+#     # print("\nRandom L1 ONLY")
+#     # process(0, cycle_dict[i], False)
 
-    print("\nFIFO ALL CACHE")
-    process(1, cycle_dict[i], True)
-    print("\nFIFO L1 ONLY")
-    process(1,cycle_dict[i], False)
 
-    print("\nLRU ALL CACHE")
-    process(2, cycle_dict[i], True)
-    print("\nLRU L1 ONLY")
-    process(2,cycle_dict[i], False)
+#     print("\nFIFO ALL CACHE")
+#     process(1, cycle_dict[i], True)
+#     print("\nFIFO L1 ONLY")
+#     process(1,cycle_dict[i], False)
+
+#     print("\nLRU ALL CACHE")
+#     process(2, cycle_dict[i], True)
+#     print("\nLRU L1 ONLY")
+#     process(2,cycle_dict[i], False)
   
-    print("\n")
+#     print("\n")
 
 
-# # with open('fifo_is_hit.txt','wb') as f:
-# #     pickle.dump(is_hit, f)
+
+print("\nRandom ALL CACHE")
+is_hit = process(0, 10000, True)
+print("\nRandom L1 ONLY")
+# process(0, 10000, False)
+
+with open('random_is_hit.txt','wb') as f:
+    pickle.dump(is_hit, f)
+
+
+print("\nFIFO ALL CACHE")
+is_hit = process(1, 10000, True)
+print("\nFIFO L1 ONLY")
+# process(1, 10000, False)
+
+with open('fifo_is_hit.txt','wb') as f:
+    pickle.dump(is_hit, f)
+
+print("\nLRU ALL CACHE")
+is_hit = process(2, 10000, True)
+print("\nLRU L1 ONLY")
+# process(2, 10000, False)
+
+with open('lru_is_hit.txt','wb') as f:
+    pickle.dump(is_hit, f)
+
+
+

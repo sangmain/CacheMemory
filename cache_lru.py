@@ -38,7 +38,7 @@ class Memory:
             self.recent_log = []
 
 
-drive_size = 1000
+drive_size = 5000
 ram_size = 500
 L1_size = 5
 L2_size = 20
