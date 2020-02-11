@@ -121,7 +121,7 @@ def init_var(is_allcache):
 def cycle(loop_size, seed, is_allcache=True):
     init_var(is_allcache) #### 변수 정의
     random.seed(seed)
-
+    # print("seed", seed)
     for i in range(loop_size):
 
         #### 찾을 데이터 랜덤
@@ -132,10 +132,14 @@ def cycle(loop_size, seed, is_allcache=True):
         cpu.mar2 = address2
 
         cpu.process()
+        
+        # print("첫 수", address1)
+        # print("두번쨰 수", address2)
 
         # print_status()
 
     stat.end(loop_size)
+    
 
     # print("FIFO")
     # print("연산 수행 횟수:", loop_size)
@@ -150,4 +154,7 @@ def cycle(loop_size, seed, is_allcache=True):
 
 
 if __name__ == "__main__":
-    cycle(10000, 103001, False)        
+    cycle(10000, 1000, False)
+    cycle(10000, 2, False)
+    cycle(10000, 5, False)
+    cycle(10000, 10, False)

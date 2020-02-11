@@ -67,25 +67,25 @@ is_hit = process(0, 10000, True)
 print("\nRandom L1 ONLY")
 # process(0, 10000, False)
 
-with open('random_is_hit.txt','wb') as f:
-    pickle.dump(is_hit, f)
+# with open('random_is_hit.txt','wb') as f:
+#     pickle.dump(is_hit, f)
 
 
-print("\nFIFO ALL CACHE")
-is_hit = process(1, 10000, True)
-print("\nFIFO L1 ONLY")
-# process(1, 10000, False)
+# print("\nFIFO ALL CACHE")
+# is_hit = process(1, 10000, True)
+# print("\nFIFO L1 ONLY")
+# # process(1, 10000, False)
 
-with open('fifo_is_hit.txt','wb') as f:
-    pickle.dump(is_hit, f)
+# with open('fifo_is_hit.txt','wb') as f:
+#     pickle.dump(is_hit, f)
 
-print("\nLRU ALL CACHE")
-is_hit = process(2, 10000, True)
-print("\nLRU L1 ONLY")
-# process(2, 10000, False)
+# print("\nLRU ALL CACHE")
+# is_hit = process(2, 10000, True)
+# print("\nLRU L1 ONLY")
+# # process(2, 10000, False)
 
-with open('lru_is_hit.txt','wb') as f:
-    pickle.dump(is_hit, f)
+# with open('lru_is_hit.txt','wb') as f:
+#     pickle.dump(is_hit, f)
 
 
 

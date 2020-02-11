@@ -126,12 +126,13 @@ def init_var(is_allcache):
         storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: ram, 4: drive} #### 저장찾치
 
 
-
+import pickle
 
 def cycle(loop_size, seed, is_allcache=True):
     init_var(is_allcache) #### 변수 정의
     random.seed(seed)
-
+    data = []
+    # print("seed", seed)
     for i in range(loop_size):
 
         #### 찾을 데이터 랜덤
@@ -142,9 +143,18 @@ def cycle(loop_size, seed, is_allcache=True):
         cpu.mar2 = address2
 
         cpu.process()
+        
+        data.append(address1)
+        data.append(address2)
+        # print("첫 수", address1)
+        # print("두번쨰 수", address2)
 
         # print_status()
+
     stat.end(loop_size)
+    with open('data' +str(seed) +'.txt','wb') as f:
+        pickle.dump(data, f)
+
 
     # print("Random")
     # print("연산 수행 횟수:", loop_size)
