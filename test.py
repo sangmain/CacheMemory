@@ -1,18 +1,20 @@
-class asd:
-    def __init__(self):
-        self.a = 10
-    def __call__(self):
-        print("call")
+import random
+# random.seed(1)
 
-    def __getitem__(self, item):
-        print("aaaa")
-        return self.a
+random.seed(1000)
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
 
-    def __customaa__(self):
-        print("bbb")
-
-    def __
-
-a = asd()
-
-b = a
+random.seed(1)
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
+print(random.randint(1, 10))
