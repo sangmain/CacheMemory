@@ -24,11 +24,11 @@ class Cpu:
         self.ac = self.r1 + self.r2
 
 
-drive_size = 5000
-ram_size = 500
-L1_size = 5
-L2_size = 20
-L3_size = 50
+drive_size = 5000 * 100
+ram_size = 500 * 100
+L1_size = 5 * 100
+L2_size = 20 * 100
+L3_size = 50 * 100
 
 ##### 하드 디스크
 drive = list(range(1, drive_size + 1)) #  1 ~ 5000
@@ -126,34 +126,25 @@ def init_var(is_allcache):
         storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: ram, 4: drive} #### 저장찾치
 
 
-import pickle
 
-def cycle(loop_size, seed, is_allcache=True):
+def cycle(data, loop_size, is_allcache=True):
     init_var(is_allcache) #### 변수 정의
-    random.seed(seed)
-    data = []
-    # print("seed", seed)
+
     for i in range(loop_size):
 
         #### 찾을 데이터 랜덤
-        address1 = random.randint(1, drive_size)
+        address1 = data[i]
         cpu.mar1 = address1
 
-        address2 = random.randint(1, drive_size)
+        address2 = data[i + 1]
         cpu.mar2 = address2
 
         cpu.process()
-        
-        data.append(address1)
-        data.append(address2)
-        # print("첫 수", address1)
-        # print("두번쨰 수", address2)
+
+       
 
         # print_status()
-
     stat.end(loop_size)
-    with open('data' +str(seed) +'.txt','wb') as f:
-        pickle.dump(data, f)
 
 
     # print("Random")

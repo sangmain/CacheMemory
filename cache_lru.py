@@ -38,11 +38,12 @@ class Memory:
             self.recent_log = []
 
 
-drive_size = 5000
-ram_size = 500
-L1_size = 5
-L2_size = 20
-L3_size = 50
+
+drive_size = 5000 * 100
+ram_size = 500 * 100
+L1_size = 5 * 100
+L2_size = 20 * 100
+L3_size = 50 * 100
 
 ##### 하드 디스크
 drive = Memory()
@@ -175,17 +176,16 @@ def init_var(is_allcache):
 
 
 
-def cycle(loop_size, seed, is_allcache=True):
+def cycle(data, loop_size, is_allcache=True):
     init_var(is_allcache) #### 변수 정의
-    random.seed(seed)
 
     for i in range(loop_size):
 
         #### 찾을 데이터 랜덤
-        address1 = random.randint(1, drive_size)
+        address1 = data[i]
         cpu.mar1 = address1
 
-        address2 = random.randint(1, drive_size)
+        address2 = data[i + 1]
         cpu.mar2 = address2
 
         cpu.process()

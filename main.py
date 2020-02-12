@@ -5,9 +5,10 @@ import c_Status
 
 import pickle
 import random
+import numpy as np
 
 seeds = []
-loop_size = 10
+loop_size = 1
 
 cycle_dict = {0:1000, 1:3000, 2:5000, 3:8000, 4:10000}
 
@@ -19,73 +20,54 @@ def process(alg_index, cycle_cnt, is_allcache):
     hit_cnt = 0
     
     for i in range(loop_size):
-        cycle_stat = replace_alg[alg_index].cycle(cycle_cnt, seeds[i], is_allcache)
+        cycle_stat = replace_alg[alg_index].cycle(data[i], cycle_cnt, is_allcache)
         stat.access_time.append(cycle_stat.average_time)
         hit_rates.append(cycle_stat.hit_rate)
         is_hit.append(cycle_stat.is_hit)
         hit_cnt += cycle_stat.hit_cnt
 
-    print("hit cnt:", hit_cnt/loop_size)
+        print("hit cnt:", hit_cnt/loop_size)
 
 
-    print("access_time:", sum(stat.access_time) / loop_size)
-    print("hit_rate:", sum(hit_rates) / loop_size)
+        print("access_time:", sum(stat.access_time) / loop_size)
+        print("hit_rate:", sum(hit_rates) / loop_size)
 
     return is_hit
 
-# for i in range(loop_size):
-#     seeds.append(random.randint(1, 1000000))
 
-seeds = [826045, 26790, 861716, 375620, 275456, 428079, 624224, 734024, 921549, 869493]
-print(seeds)
+# seeds = [826045, 26790, 861716, 375620, 275456, 428079, 624224, 734024, 921549, 869493]
+data = []
+data.append(np.load("./random_data1.npy"))
+data.append(np.load("./random_data2.npy"))
+data.append(np.load("./random_data3.npy"))
 
-# for i in range(5):
-#     print(cycle_dict[i])    
-
-#     # print("\nRandom ALL CACHE")
-#     # process(0, cycle_dict[i], True)
-#     # print("\nRandom L1 ONLY")
-#     # process(0, cycle_dict[i], False)
-
-
-#     print("\nFIFO ALL CACHE")
-#     process(1, cycle_dict[i], True)
-#     print("\nFIFO L1 ONLY")
-#     process(1,cycle_dict[i], False)
-
-#     print("\nLRU ALL CACHE")
-#     process(2, cycle_dict[i], True)
-#     print("\nLRU L1 ONLY")
-#     process(2,cycle_dict[i], False)
-  
-#     print("\n")
 
 
 
 print("\nRandom ALL CACHE")
-is_hit = process(0, 10000, True)
-print("\nRandom L1 ONLY")
-# process(0, 10000, False)
+is_hit = process(0, 100000, True)
+# print("\nRandom L1 ONLY")
+# process(0, 100000, False)
 
-# with open('random_is_hit.txt','wb') as f:
-#     pickle.dump(is_hit, f)
+with open('random_is_hit.txt','wb') as f:
+    pickle.dump(is_hit, f)
 
 
-# print("\nFIFO ALL CACHE")
-# is_hit = process(1, 10000, True)
+print("\nFIFO ALL CACHE")
+is_hit = process(1, 100000, True)
 # print("\nFIFO L1 ONLY")
-# # process(1, 10000, False)
+# process(1, 10000, False)
 
-# with open('fifo_is_hit.txt','wb') as f:
-#     pickle.dump(is_hit, f)
+with open('fifo_is_hit.txt','wb') as f:
+    pickle.dump(is_hit, f)
 
-# print("\nLRU ALL CACHE")
-# is_hit = process(2, 10000, True)
+print("\nLRU ALL CACHE")
+is_hit = process(2, 100000, True)
 # print("\nLRU L1 ONLY")
-# # process(2, 10000, False)
+# process(2, 10000, False)
 
-# with open('lru_is_hit.txt','wb') as f:
-#     pickle.dump(is_hit, f)
+with open('lru_is_hit.txt','wb') as f:
+    pickle.dump(is_hit, f)
 
 
 
