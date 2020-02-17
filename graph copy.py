@@ -92,7 +92,6 @@ def preprocess(is_hit):
     return hit_cnt_arr
 
 a = preprocess(random_is_hit)
-print(a)
 b = preprocess(fifo_is_hit)
 c = preprocess(lru_is_hit)
 plt_hitcnt(a[:300], b[:300], c[:300])
