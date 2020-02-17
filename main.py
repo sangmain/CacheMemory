@@ -8,7 +8,7 @@ import random
 import numpy as np
 
 seeds = []
-loop_size = 2
+loop_size = 1
 
 replace_alg = {0: cache_random, 1:cache_fifo, 2:cache_lru}
 def process(alg_index, cycle_cnt, is_allcache):
@@ -29,19 +29,19 @@ def process(alg_index, cycle_cnt, is_allcache):
         print("access_time:", cycle_stat.average_time)
         print("hit_rate:",cycle_stat.hit_rate)
 
-    print("avg hit cnt:", hit_cnt/loop_size)
+    # print("avg hit cnt:", hit_cnt/loop_size)
 
 
-    print("avg access_time:", sum(stat.access_time) / loop_size)
-    print("avg hit_rate:", sum(hit_rates) / loop_size)
+    # print("avg access_time:", sum(stat.access_time) / loop_size)
+    # print("avg hit_rate:", sum(hit_rates) / loop_size)
 
     return is_hit
 
 
 # seeds = [826045, 26790, 861716, 375620, 275456, 428079, 624224, 734024, 921549, 869493]
 data = []
-data.append(np.load("./Data/prob_data.npy"))
-data.append(np.load("./Data/weighted_data.npy"))
+# data.append(np.load("./Data/prob_data.npy"))
+data.append(np.load("./Data/realweighted_data.npy"))
 
 # data.append(np.load("./random_data3.npy"))
 
