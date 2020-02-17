@@ -3,14 +3,17 @@ import pickle
 import pandas as pd
 import numpy as np
 
-seeds = [826045, 26790, 861716, 375620, 275456, 428079, 624224, 734024, 921549, 869493]
-disk_size = 5000
+seeds = [1]
+loop_size = 50000
 for seed in seeds:
-    with open('./Data/data'+ str(seed) + '.txt', 'rb') as f:
-        data = pickle.load(f)
+    # with open('./Data/random_data'+ str(seed) + '.txt', 'rb') as f:
+    #     data = pickle.load(f)
+    data = np.load('./Data/weighted_data.npy')
+
+    print(len(data))
 
     def count_elements(data):
-        hist = [0] * disk_size
+        hist = [0] * loop_size
             
         for i in data:
             hist[i-1] += 1
@@ -21,7 +24,8 @@ for seed in seeds:
     hist = count_elements(data)
     print(hist)
 
-    value_counts = pd.DataFrame({"Data":np.arange(1, disk_size+1), "Count": hist})
+    value_counts = pd.DataFrame({"Data":np.arange(1, loop_size+1), "Count": hist})
+    # value_counts = value_counts[:10000]
     plt.bar(value_counts['Data'], value_counts['Count'])
-    plt.savefig(str(seed) + ".png")
+    plt.savefig('weighted_data' + ".png")
     plt.show()

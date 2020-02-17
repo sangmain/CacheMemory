@@ -1,20 +1,19 @@
-import random
-# random.seed(1)
+import numpy as np
 
-random.seed(1000)
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
+prob = []
+num = 0
+for i in range(50000):
+    prob.append(num)
+    num += 0.1
 
-random.seed(1)
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
-print(random.randint(1, 10))
+sum_num = sum(prob)
+for i in range(50000):
+    prob[i] = prob[i] / sum_num
+
+print(prob)
+
+data = np.arange(1, 50001)
+data = [np.random.choice(data, p=prob) for _ in range(50000)]
+
+np.save("./weighted_data", data)
+
