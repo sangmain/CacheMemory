@@ -39,11 +39,11 @@ class Memory:
 
 
 
-drive_size = 5000 * 100
-ram_size = 500 * 100
-L1_size = 5 * 100
-L2_size = 20 * 100
-L3_size = 50 * 100
+drive_size = 5000 * 10
+ram_size = 500 * 10
+L1_size = 5 * 10
+L2_size = 20 * 10
+L3_size = 50 * 10
 
 ##### 하드 디스크
 drive = Memory()

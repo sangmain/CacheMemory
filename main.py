@@ -42,6 +42,7 @@ def process(alg_index, cycle_cnt, is_allcache):
 data = []
 data.append(np.load("./Data/prob_data.npy"))
 data.append(np.load("./Data/weighted_data.npy"))
+
 # data.append(np.load("./random_data3.npy"))
 
 
