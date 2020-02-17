@@ -9,7 +9,7 @@ for seed in seeds:
     # with open('./Data/random_data'+ str(seed) + '.txt', 'rb') as f:
     #     data = pickle.load(f)
     # data = np.load('./Data/weighted_data2.npy')
-    data = np.load('./Data/prob_data2.npy')
+    data = np.load('./Data/realweighted_data.npy')
     # data = np.load('./Data/weighted_data1.npy')
     print(data.tolist())
     # for i in range(loop_size):
@@ -33,5 +33,5 @@ for seed in seeds:
     value_counts = pd.DataFrame({"Data":np.arange(1, loop_size+1), "Count": hist})
     # value_counts = value_counts[:10000]
     plt.bar(value_counts['Data'], value_counts['Count'])
-    plt.savefig('./Data/prob_data2' + ".png")
+    plt.savefig('./Data/realweighted_data' + ".png")
     plt.show()

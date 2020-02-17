@@ -16,7 +16,10 @@ prob = []
 num = 0
 for i in range(data_range):
     prob.append(num)
-    num += 0.1
+    if i > (data_range/2):
+        num += 0.5
+    else:
+        num += 0.1
 
 sum_num = sum(prob)
 print(sum_num)
@@ -37,4 +40,4 @@ print(seed)
 # with open('random_data.txt','wb') as f:
 #     pickle.dump(data, f)
 
-np.save("./Data/weighted_data2", data)
+np.save("./Data/realweighted_data", data)
