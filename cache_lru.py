@@ -97,21 +97,20 @@ def load_data(address, storage_key=2):
 
         index = storage.index(address) 
         data = storage[index]
-        data_recency[index] = 0
+        data_recency[data-1] = 0
         stat.set_location(storage_key)
 
     else: #### 없으면 다음 저장장치로 재귀
         data = load_data(address, storage_key + 1) #재귀 후 발견된 데이터 반환
         indices = get_emptyindex(storage)
-
         if len(indices) == 0: #### 저장공간에 빈 공간이 없으면 LRU로 채움
             least_recent_idx = 0
-            for address in storage:
-                print(storage[least_recent_idx])
-                if data_recency[address] < storage[address]:
-                    least_recent_idx = address
-            storage[least_recent_idx] = data
 
+            for i in range(1, len(storage), 1):
+                if data_recency[storage[i] - 1] > data_recency[storage[least_recent_idx] - 1]:
+                    least_recent_idx = i
+
+            storage[least_recent_idx] = data
         else:
             storage[indices[0]] = data
 
@@ -126,21 +125,10 @@ def print_status():
     print("r1:", cpu.r1, "r2:", cpu.r2, "result:", cpu.ac, "answer:", cpu.mar1 + cpu.mar2)
 
     print("L1:", L1.data)
-    print("log:", L1.recent_log)
     print("L2:", L2.data)
-    print("log:", L2.recent_log)
-
     print("L3:", L3.data)
-    print("log:", L3.recent_log)
     print("RAM:", ram.data)
-    print("log:", ram.recent_log)
-
-
     print()
-
-    if stat.access_time[-2] < 0.3 or stat.access_time[-1] < 0.3:
-        import sys
-        sys.exit()
 
 def init_var(is_allcache):
     global ram, L1, L2, L3, cpu, stat, storage_structure
