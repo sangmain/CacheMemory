@@ -27,11 +27,16 @@ class Cpu:
         self.ac = self.r1 + self.r2
 
 
-drive_size = 5000 * 10
-ram_size = 500 * 10
-L1_size = 5 * 10
-L2_size = 20 * 10
-L3_size = 50 * 10
+
+drive_size = 50000
+ram_size = 30000
+# L1_size = 512
+# L2_size = 2048
+# L3_size = 20480
+
+L1_size = 1
+L2_size = 2
+L3_size = 3
 
 ##### 하드 디스크
 drive = list(range(1, drive_size + 1)) #  1 ~ 5000
@@ -121,7 +126,7 @@ def init_var(is_allcache):
 def cycle(data, loop_size, is_allcache=True):
     init_var(is_allcache) #### 변수 정의
 
-    for i in range(loop_size):
+    for i in range(0, loop_size, 2):
 
         #### 찾을 데이터 랜덤
         address1 = data[i]
@@ -138,11 +143,11 @@ def cycle(data, loop_size, is_allcache=True):
     stat.end(loop_size)
     
 
-    # print("FIFO")
-    # print("연산 수행 횟수:", loop_size)
-    # print("hit rate:", stat.hit_rate)
-    # print("평균 접근 시간:", stat.average_time)
-    # print("hit count:", stat.hit_cnt)
+    print("FIFO")
+    print("연산 수행 횟수:", loop_size)
+    print("hit rate:", stat.hit_rate)
+    print("평균 접근 시간:", stat.average_time)
+    print("hit count:", stat.hit_cnt)
 
 
     return stat
@@ -151,7 +156,6 @@ def cycle(data, loop_size, is_allcache=True):
 
 
 if __name__ == "__main__":
-    cycle(10000, 1000, False)
-    cycle(10000, 2, False)
-    cycle(10000, 5, False)
-    cycle(10000, 10, False)
+    data = [1, 5, 1, 10, 6, 5, 3, 7, 1, 4]
+    cycle(data, len(data), True)
+    

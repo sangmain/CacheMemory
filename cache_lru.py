@@ -39,11 +39,12 @@ class Memory:
 
 
 
-drive_size = 5000 * 10
-ram_size = 500 * 10
-L1_size = 5 * 10
-L2_size = 20 * 10
-L3_size = 50 * 10
+
+drive_size = 50000
+ram_size = 30000
+L1_size = 512
+L2_size = 2048
+L3_size = 20480
 
 ##### 하드 디스크
 drive = Memory()
@@ -179,7 +180,7 @@ def init_var(is_allcache):
 def cycle(data, loop_size, is_allcache=True):
     init_var(is_allcache) #### 변수 정의
 
-    for i in range(loop_size):
+    for i in range(0, loop_size, 2):
 
         #### 찾을 데이터 랜덤
         address1 = data[i]

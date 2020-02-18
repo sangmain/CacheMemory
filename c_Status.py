@@ -34,5 +34,5 @@ class Status:
 
     def end(self, loop_size):
         self.hit_cnt = sum(self.is_hit)
-        self.hit_rate = self.hit_cnt / (loop_size * 2)
-        self.average_time = sum(self.access_time) / (loop_size * 2) 
+        self.hit_rate = self.hit_cnt / loop_size
+        self.average_time = sum(self.access_time) / loop_size
