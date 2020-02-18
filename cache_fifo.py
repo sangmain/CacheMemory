@@ -29,7 +29,7 @@ class Cpu:
 
 
 drive_size = 50000
-ram_size = 30000
+ram_size = 4
 # L1_size = 512
 # L2_size = 2048
 # L3_size = 20480
@@ -82,10 +82,10 @@ def load_data(address, storage_key=2):
     else: #### 없으면 다음 저장장치로 재귀
         data = load_data(address, storage_key + 1)        
 
-        if not storage.full(): #### 저장공간에 빈 공간이 없으면 랜덤으로 채움
+        if not storage.full(): 
             storage.put_nowait(data)
-        else:
-            storage.get_nowait()
+        else: #### 저장공간에 빈 공간이 없으면 FIFO
+            storage.get_nowait() 
             storage.put_nowait(data)
 
 
@@ -99,6 +99,7 @@ def print_status():
     print("L1:", L1.queue)
     print("L2:", L2.queue)
     print("L3:", L3.queue)
+    print("RAM:", ram.queue)
     print()
 
 def init_var(is_allcache):
@@ -139,7 +140,7 @@ def cycle(data, loop_size, is_allcache=True):
 
        
 
-        # print_status()
+        print_status()
     stat.end(loop_size)
     
 
