@@ -41,10 +41,14 @@ class Memory:
 
 
 drive_size = 50000
-ram_size = 30000
-L1_size = 512
-L2_size = 2048
-L3_size = 20480
+ram_size = 4
+# L1_size = 512
+# L2_size = 2048
+# L3_size = 20480
+
+L1_size = 1
+L2_size = 2
+L3_size = 3
 
 ##### 하드 디스크
 drive = Memory()
@@ -62,6 +66,7 @@ L1 = None
 L2 = None
 L3 = None
 
+data_recency = [0] * drive_size
 ##### CPU 클래스 선언
 cpu = None
 
@@ -83,50 +88,33 @@ def get_emptyindex(storage):
 
 #### 재귀로 데이터 찾고 저장하기
 def load_data(address, storage_key=2):
+    global data_recency
     storage = storage_structure[storage_key].data ####딕셔너리에서 현재 참고해야할 저장장치 변수를 storage에 담는다 (파이썬은 주소 개념이라 자동으로 바뀜)
-    recent_log = storage_structure[storage_key].recent_log
+    
     
     if address in storage: #### 찾고싶은 데이터가 저장공간에 있으면
+        data_recency = [x + 1 for x in data_recency]
+
         index = storage.index(address) 
         data = storage[index]
+        data_recency[index] = 0
         stat.set_location(storage_key)
-        
 
-        for i in range(storage_key, len(storage_structure)-1, 1):
-            recent_log = storage_structure[i].recent_log
-            try:
-                recent_log[storage_structure[i].data.index(data)] = 0
-            except:
-                recent_log.append(0)
-
-            recent_log = [x + 1 for x in recent_log]
-            storage_structure[i].recent_log = recent_log
-
-
-        
     else: #### 없으면 다음 저장장치로 재귀
         data = load_data(address, storage_key + 1) #재귀 후 발견된 데이터 반환
         indices = get_emptyindex(storage)
 
         if len(indices) == 0: #### 저장공간에 빈 공간이 없으면 LRU로 채움
-            recent_log = storage_structure[storage_key].recent_log
-            lfu_index = recent_log.index(max(recent_log))
-            storage[lfu_index] = data
-            recent_log[lfu_index] = 0
+            least_recent_idx = 0
+            for address in storage:
+                print(storage[least_recent_idx])
+                if data_recency[address] < storage[address]:
+                    least_recent_idx = address
+            storage[least_recent_idx] = data
 
         else:
             storage[indices[0]] = data
 
-            recent_log = storage_structure[storage_key].recent_log
-            recent_log.append(0)
-
-        recent_log = [x + 1 for x in recent_log]
-        storage_structure[storage_key].recent_log = recent_log
-
-
-
-   
-        
     return data
     
 #endregion
@@ -144,6 +132,9 @@ def print_status():
 
     print("L3:", L3.data)
     print("log:", L3.recent_log)
+    print("RAM:", ram.data)
+    print("log:", ram.recent_log)
+
 
     print()
 
@@ -181,7 +172,6 @@ def cycle(data, loop_size, is_allcache=True):
     init_var(is_allcache) #### 변수 정의
 
     for i in range(0, loop_size, 2):
-
         #### 찾을 데이터 랜덤
         address1 = data[i]
         cpu.mar1 = address1
@@ -193,14 +183,14 @@ def cycle(data, loop_size, is_allcache=True):
 
        
 
-        # print_status()
+        print_status()
     stat.end(loop_size)
 
-    # print("LRU")
-    # print("연산 수행 횟수:", loop_size)
-    # print("hit rate:", stat.hit_rate)
-    # print("평균 접근 시간:", stat.average_time)
-    # print("hit count:", stat.hit_cnt)
+    print("LRU")
+    print("연산 수행 횟수:", loop_size)
+    print("hit rate:", stat.hit_rate)
+    print("평균 접근 시간:", stat.average_time)
+    print("hit count:", stat.hit_cnt)
 
 
     return stat
@@ -209,4 +199,5 @@ def cycle(data, loop_size, is_allcache=True):
 
 
 if __name__ == "__main__":
-    cycle(1000, 1, True)        
+    data = [1, 5, 1, 10, 6, 5, 3, 7, 1, 4]
+    cycle(data, len(data), True)    
