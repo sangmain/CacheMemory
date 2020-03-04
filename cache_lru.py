@@ -41,18 +41,18 @@ class Memory:
 
 
 drive_size = 50000
-ram_size = 4
-# L1_size = 512
-# L2_size = 2048
-# L3_size = 20480
+ram_size = 30000
+L1_size = 512
+L2_size = 2048
+L3_size = 20480
 
-L1_size = 1
-L2_size = 2
-L3_size = 3
+# L1_size = 1
+# L2_size = 3
+# L3_size = 1
 
 ##### 하드 디스크
 drive = Memory()
-drive.data =  list(range(1, drive_size + 1)) #  1 ~ 5000
+drive.data =  list(range(0, drive_size + 1)) #  1 ~ 5000
 # print(len(drive))
 
 
@@ -163,7 +163,6 @@ def cycle(data, loop_size, is_allcache=True):
         #### 찾을 데이터 랜덤
         address1 = data[i]
         cpu.mar1 = address1
-
         address2 = data[i + 1]
         cpu.mar2 = address2
 
@@ -171,7 +170,7 @@ def cycle(data, loop_size, is_allcache=True):
 
        
 
-        print_status()
+        # print_status()
     stat.end(loop_size)
 
     print("LRU")
@@ -187,5 +186,5 @@ def cycle(data, loop_size, is_allcache=True):
 
 
 if __name__ == "__main__":
-    data = [1, 5, 1, 10, 6, 5, 3, 7, 1, 4]
+    data = [1,2,3,1,4,5,1,2,3,1,4,5,1,2,3,1,4,5,1,2,3,1,4,5,1,2,3,1,4,5,1,2,3,1,4,5,6,6]
     cycle(data, len(data), True)    

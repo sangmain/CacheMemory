@@ -6,6 +6,7 @@ import c_Status
 import pickle
 import random
 import numpy as np
+import pandas as pd
 
 seeds = []
 loop_size = 1
@@ -41,37 +42,37 @@ def process(alg_index, cycle_cnt, is_allcache):
 # seeds = [826045, 26790, 861716, 375620, 275456, 428079, 624224, 734024, 921549, 869493]
 data = []
 # data.append(np.load("./Data/prob_data.npy"))
-data.append(np.load("./Data/random_data.npy"))
+# data.append(np.load("./Data/random_data.npy"))
 
 # data.append(np.load("./random_data3.npy"))
 
+file = pd.read_csv("./Data/spec2006_prop.csv")
 
 
+# print("\nRandom ALL CACHE")
+# is_hit = process(0, 100000, True)
+# # print("\nRandom L1 ONLY")
+# # process(0, 100000, False)
 
-print("\nRandom ALL CACHE")
-is_hit = process(0, 100000, True)
-# print("\nRandom L1 ONLY")
-# process(0, 100000, False)
-
-with open('random_is_hit.txt','wb') as f:
-    pickle.dump(is_hit, f)
+# with open('random_is_hit.txt','wb') as f:
+#     pickle.dump(is_hit, f)
 
 
-print("\nFIFO ALL CACHE")
-is_hit = process(1, 100000, True)
-# print("\nFIFO L1 ONLY")
-# process(1, 10000, False)
+# print("\nFIFO ALL CACHE")
+# is_hit = process(1, 100000, True)
+# # print("\nFIFO L1 ONLY")
+# # process(1, 10000, False)
 
-with open('fifo_is_hit.txt','wb') as f:
-    pickle.dump(is_hit, f)
+# with open('fifo_is_hit.txt','wb') as f:
+#     pickle.dump(is_hit, f)
 
 print("\nLRU ALL CACHE")
-is_hit = process(2, 100000, True)
+is_hit = replace_alg[2].cycle(file['address'], 727228, True)
 # print("\nLRU L1 ONLY")
 # process(2, 10000, False)
 
-with open('lru_is_hit.txt','wb') as f:
-    pickle.dump(is_hit, f)
+# with open('lru_is_hit.txt','wb') as f:
+#     pickle.dump(is_hit, f)
 
 
 
