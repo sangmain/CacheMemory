@@ -1,0 +1,6 @@
+Location: ./Result/RANDOM/64
+Policy: RANDOM
+Data: cc1
+L1: 64
+L2: 1000
+L3: 200
