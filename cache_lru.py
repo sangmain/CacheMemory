@@ -179,12 +179,13 @@ data_recency = {}
 def start(file, loop_size, l1=0, l2=0, l3=0):
     init_var(l1, l2, l3, file)
     cpu.cpu_start(file, loop_size)
-    with open("./Result/LRU/"+str(L1_size)+"config.txt", "w") as f:
-        f.write("Location: ./Result/LRU/"+str(L1_size)+"\nPolicy: LRU\nData: %s\nL1: %d\nL2: %d\nL3: %d"% ("cc1", L1_size, L2_size, L3_size))
-    with open('./Result/LRU/'+str(L1_size)+'hit.txt','wb') as f:
+    with open("./Result/LRU/"+str(L1_size) + "-" + str(L2_size)+"config.txt", "w") as f:
+        f.write("Location: ./Result/LRU/"+str(L1_size) + "-" + str(L2_size)+"\nPolicy: LRU\nData: %s\nL1: %d\nL2: %d\nL3: %d"% ("cc1", L1_size, L2_size, L3_size))
+    with open('./Result/LRU/'+str(L1_size) + "-" + str(L2_size)+'hit.txt','wb') as f:
         pickle.dump(stat.is_hit, f)
-    with open('./Result/LRU/'+str(L1_size)+'time.txt','wb') as f:
+    with open('./Result/LRU/'+str(L1_size) + "-" + str(L2_size)+'time.txt','wb') as f:
         pickle.dump(stat.access_time, f)
+
 
 if __name__ == "__main__":
     file = pd.read_csv("./Data/cc1.csv")

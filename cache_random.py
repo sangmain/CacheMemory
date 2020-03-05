@@ -136,12 +136,13 @@ def init_var(l1, l2, l3):
 def start(file, loop_size, l1=0, l2=0, l3=0):
     init_var(l1, l2, l3)
     cpu.cpu_start(file, loop_size)
-    with open("./Result/RANDOM/"+str(L1_size)+"config.txt", "w") as f:
-        f.write("Location: ./Result/RANDOM/"+str(L1_size)+"\nPolicy: RANDOM\nData: %s\nL1: %d\nL2: %d\nL3: %d"% ("cc1", L1_size, L2_size, L3_size))
-    with open('./Result/RANDOM/'+str(L1_size)+'hit.txt','wb') as f:
+    with open("./Result/RANDOM/"+str(L1_size) + "-" +  str(L2_size)+"config.txt", "w") as f:
+        f.write("Location: ./Result/RANDOM/"+str(L1_size) + "-" + str(L2_size)+"\nPolicy: RANDOM\nData: %s\nL1: %d\nL2: %d\nL3: %d"% ("cc1", L1_size, L2_size, L3_size))
+    with open('./Result/RANDOM/'+str(L1_size) + "-" + str(L2_size)+'hit.txt','wb') as f:
         pickle.dump(stat.is_hit, f)
-    with open('./Result/RANDOM/'+str(L1_size)+'time.txt','wb') as f:
+    with open('./Result/RANDOM/'+str(L1_size) + "-" + str(L2_size)+'time.txt','wb') as f:
         pickle.dump(stat.access_time, f)
+
 
 if __name__ == "__main__":
     file = pd.read_csv("./Data/cc1.csv")
