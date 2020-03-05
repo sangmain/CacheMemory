@@ -2,7 +2,7 @@
 
 class Status:
 
-    def __init__(self, is_allcache=True):
+    def __init__(self, storage_len):
         
         self.is_hit = []
         self.hit_cnt = 0
@@ -14,14 +14,15 @@ class Status:
         self.access_time = []
         self.average_time = 0.0
 
-        if is_allcache:
+        if storage_len == 3:
+            self.time_dict = {2: 0.1, 3: 10, 4:300} #### access time
+            self.cache_index = [2]
+        elif storage_len == 4:
+            self.time_dict = {2: 0.1, 3: 0.3, 4: 10, 5: 300} #### access time
+            self.cache_index = [2, 3]
+        else:
             self.time_dict = {2: 0.1, 3: 0.3, 4: 0.7, 5: 10, 6: 300} #### access time
             self.cache_index = [2, 3, 4]
-
-        else:
-            self.time_dict = {2: 0.1, 3: 1.1, 4: 4.1} #### access time
-            self.cache_index = [2]
-                        
     
     def set_location(self, storage_key):
         self.is_hit.append(storage_key in self.cache_index)

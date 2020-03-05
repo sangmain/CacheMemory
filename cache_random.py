@@ -13,7 +13,7 @@ class Cpu:
     def load(self, reg, file):
         reg = load_data(file)
         
-    def cpu_start(self, file, loop_size, is_allcache=True):
+    def cpu_start(self, file, loop_size):
         index = 0
         for i in range(0, loop_size, 1):
             index += 1
@@ -22,7 +22,11 @@ class Cpu:
             self.load(self.r1, file.iloc[i]) # address
             if index == 100000:
                 print((i+1)/10000, "\b%")
-                index = 0   
+                index = 0
+
+            # print("L1:", L1.data)
+            # print("L2:", L2.data)
+            # print("L3:", L3.data)
 
         stat.end(loop_size)
         
@@ -100,7 +104,7 @@ def load_data(file, storage_key=2):
     
 #endregion
 
-def init_var(l1, l2, l3, is_allcache):
+def init_var(l1, l2, l3):
     global ram, L1, L2, L3, cpu, stat, storage_structure
     global L1_size, L2_size, L3_size
     L1_size = l1
@@ -118,21 +122,19 @@ def init_var(l1, l2, l3, is_allcache):
     ##### CPU 클래스 선언
     cpu = Cpu()
 
-    ##### Status 클래스 선언
-    stat = c_Status.Status(is_allcache)
-
-    if is_allcache:
-        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: L2, 4: L3} #### 저장찾치
-        
+    if L2_size == 0:
+        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1} #### 저장찾치
+    elif L3_size == 0:
+        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: L2} #### 저장찾치
     else:
-        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: ram, 4: drive} #### 저장찾치
+        storage_structure = {0: cpu.r1, 1: cpu.r2, 2: L1, 3: L2, 4: L3}
+        
+    ##### Status 클래스 선언
+    stat = c_Status.Status(len(storage_structure))
 
 
-
-
-
-def start(file, loop_size, l1, l2, l3):
-    init_var(l1, l2, l3, True)
+def start(file, loop_size, l1=0, l2=0, l3=0):
+    init_var(l1, l2, l3)
     cpu.cpu_start(file, loop_size)
     with open("./Result/RANDOM/"+str(L1_size)+"config.txt", "w") as f:
         f.write("Location: ./Result/RANDOM/"+str(L1_size)+"\nPolicy: RANDOM\nData: %s\nL1: %d\nL2: %d\nL3: %d"% ("cc1", L1_size, L2_size, L3_size))
