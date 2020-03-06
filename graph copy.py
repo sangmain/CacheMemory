@@ -35,10 +35,10 @@ def access_time_bar(random, fifo, lru):
 
 
 
-random = [0.50722, 0.00]
-fifo = [ 0.50674, 0.00]
-lru = [0.5067, 0.00]
-hit_rate_bar(random, fifo, lru)
+# random = [0.50722, 0.00]
+# fifo = [ 0.50674, 0.00]
+# lru = [0.5067, 0.00]
+# hit_rate_bar(random, fifo, lru)
 
 # random = [0.0, 0.0, 2.019252000001599, 0.00]
 # fifo = [0.0, 0.0, 2.0207800000016025, 0.00]
@@ -46,54 +46,41 @@ hit_rate_bar(random, fifo, lru)
 # access_time_bar(random, fifo, lru)
 
 
-# import pickle
+import pickle
 # from scipy.interpolate import make_interp_spline, BSpline
 
 
-# with open('random_is_hit.txt', 'rb') as f:
-#     random_is_hit = pickle.load(f)
+with open('./Result/LRU/64hit.txt', 'rb') as f:
+    random_is_hit = pickle.load(f)
 
-# with open('fifo_is_hit.txt', 'rb') as f:
-#     fifo_is_hit = pickle.load(f)
+with open('./Result/LRU/64hit.txt', 'rb') as f:
+    fifo_is_hit = pickle.load(f)
 
-# with open('lru_is_hit.txt', 'rb') as f:
-#     lru_is_hit = pickle.load(f)
+with open('./Result/LRU/64hit.txt', 'rb') as f:
+    lru_is_hit = pickle.load(f)
 
-# def plt_hitcnt(a, b, c):
+def plt_hitcnt(a, b, c):
+    plt.title("Replacement Algorithm Hit count")
+    plt.plot(a, color="green", label="Random")
+    plt.plot(c, label="LRU")
 
+    plt.plot(b, color="orange", label="FIFO")
+    plt.xlabel("Cycle Count")
+    plt.ylabel("Hit Count")
+    plt.legend()
+    # plt.savefig("Hitcnt_comp.png")
+    plt.show()
 
-#     plt.title("Replacement Algorithm ~300 Hit count")
-#     plt.plot(a, color="green", label="Random")
-#     plt.plot(c, label="LRU")
+def preprocess(is_hit):
+    hit_cnt_arr = []
+    sum_ishit = 0
+    for i in range(len(is_hit)):
+        sum_ishit += is_hit[i]
+        hit_cnt_arr.append(sum_ishit)
 
-#     plt.plot(b, color="orange", label="FIFO")
-#     plt.xlabel("Cycle Count")
-#     plt.ylabel("Hit Count")
-#     plt.legend()
-#     plt.savefig("Hitcnt_comp.png")
-#     plt.show()
+    return hit_cnt_arr
 
-# def preprocess(is_hit):
-#     is_hit = np.array(is_hit)
-#     arr = []
-
-#     for i in range(is_hit.shape[1]):
-#         add_sum = 0
-#         for j in range(is_hit.shape[0]):
-#             add_sum += is_hit[j][i]
-#         arr.append(add_sum)
-
-#     # print(arr)
-
-#     hit_cnt = 0
-#     hit_cnt_arr = []
-#     for i in range(0, len(arr)):
-#         hit_cnt += arr[i]
-#         hit_cnt_arr.append(hit_cnt)
-
-#     return hit_cnt_arr
-
-# a = preprocess(random_is_hit)
-# b = preprocess(fifo_is_hit)
-# c = preprocess(lru_is_hit)
-# plt_hitcnt(a[:300], b[:300], c[:300])
+a = preprocess(random_is_hit)
+b = preprocess(fifo_is_hit)
+c = preprocess(lru_is_hit)
+plt_hitcnt(a, b ,c)
