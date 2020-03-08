@@ -7,6 +7,12 @@ with open("./Result/FIFO/16hit.txt", 'rb') as f:
 with open("./Result/RANDOM/16hit.txt", 'rb') as f:
     random_is_hit = pickle.load(f)
 
+with open("./Result/LRU/16time.txt", 'rb') as f:
+    lru_is_hit = pickle.load(f)
+with open("./Result/FIFO/16time.txt", 'rb') as f:
+    fifo_is_hit = pickle.load(f)
+with open("./Result/RANDOM/16time.txt", 'rb') as f:
+    random_is_hit = pickle.load(f)
 
 
 import numpy as np
@@ -18,30 +24,36 @@ total = 1000000
 def process(is_hit, slice_size, total):
     slice_hit = []; slice_miss = []
     for i in range(int(total/slice_size)):
-        slice_hit.append(sum(is_hit[slice_size * i: slice_size * (i+1)]))
-        slice_miss.append(slice_size - slice_hit[-1])
+        slice_hit.append(sum(is_hit[slice_size * i: slice_size * (i+1)])/slice_size)
+        # slice_miss.append(slice_size - slice_hit[-1])
+    
+    print(slice_hit)
     return slice_miss
 
 lru_miss = process(lru_is_hit, slice_size, total)
 random_miss = process(random_is_hit, slice_size, total)
 fifo_miss = process(fifo_is_hit, slice_size, total)
 
-index = np.arange(int(total/slice_size))
-value = [str((slice_size*(x+1))) for x in index]
-# value = [str((slice_size*(x+1))) for x in index]
-import matplotlib.pyplot as plt
+# index = np.arange((total/slice_size))
+# index += 0.2
+# # value = [str((slice_size*(x+1))) for x in index]
+# # value = [str((slice_size*(x+1))) for x in index]
+# import matplotlib.pyplot as plt
 # plt.figure(dpi=600)
-plt.plot(lru_miss, label="LRU")
-plt.plot(fifo_miss, label="FIFO")
-plt.plot(random_miss, label="RANDOM")
-plt.ylabel("Miss Count")
-plt.xlabel("Instructions")
-plt.xticks(index, ["200k","400k","600k","800k","1M"])
-# plt.xticks(index, ["100k", "200k", "300k", "400k", "500k", "600k", "700k", "800k", "900k", "1M"])
-plt.legend()
-plt.title("Cache Size of 16")
-plt.savefig("perI_16.tiff")
-plt.show()
+# uni = np.arange(5)
+
+# plt.bar(uni, fifo_miss,  width=0.3, label="FIFO")
+# plt.bar(uni + 0.2, random_miss,  width=0.3, label="RANDOM")
+# plt.bar(uni + 0.4, lru_miss, width=0.3, label="LRU")
+
+# plt.ylabel("Miss Count")
+# plt.xlabel("Instructions")
+# plt.xticks(index, ["200k","400k","600k","800k","1M"])
+# # plt.xticks(index, ["100k", "200k", "300k", "400k", "500k", "600k", "700k", "800k", "900k", "1M"])
+# plt.legend()
+# plt.title("Cache Size of 16")
+# plt.savefig("perI_16.tiff")
+# plt.show()
 #endregion
 
 #region ACCESSTIME
